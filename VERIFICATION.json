@@ -1,0 +1,20 @@
+{
+  "verification_date": "2026-10-07",
+  "version": "1.0.0+codex.20261007150216",
+  "platform": "Windows x64",
+  "skill_count": 129,
+  "plugin_files": 15693,
+  "mcp_tools_verified": 45,
+  "image_blaster_template_files_verified": 113,
+  "fresh_isolated_install_passed": true,
+  "anonymous_download_passed": true,
+  "anonymous_download_commit": "be10be2ec99d8a503d3c1bb12af8ab3f9eaa034e",
+  "update_install_passed": true,
+  "final_installed_cache_parity_passed": true,
+  "owner_configuration_unchanged": true,
+  "installer_test_cases_passed": 11,
+  "installer_sha256": "d60520de7aaa790be2faa99643c46e11cc0cf31f6b6f60064955497808936a0e",
+  "encrypted_sha256": "65f365b31666c932f70b67ee04bb2e608c3ea0a279e8da8096a68531d6cac2b8",
+  "external_licensed_software_and_paid_apis": "NOT_RUN",
+  "test_scope": "Isolated Codex profiles on one Windows x64 host; external dependencies remain recipient-specific."
+}
