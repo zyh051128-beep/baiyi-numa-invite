@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "format": "MMCMAX1",
+  "size": 157841623,
+  "sha256": "65f365b31666c932f70b67ee04bb2e608c3ea0a279e8da8096a68531d6cac2b8",
+  "parts": [
+    {
+      "name": "part-0001.bin",
+      "sha256": "0c4ff0731160015b41cd186e38d72cef7bf772ea4416b6bfbdc34765354fdd1a",
+      "size": 33554432
+    },
+    {
+      "name": "part-0002.bin",
+      "sha256": "a94cc300e35e783dd97d87315550e14e7207995ffd15bc43b5d82822e801692d",
+      "size": 33554432
+    },
+    {
+      "name": "part-0003.bin",
+      "sha256": "6d23f2e873f574e3c6d08109eed65972279b63334d748cd83b1d62fd77955fad",
+      "size": 33554432
+    },
+    {
+      "name": "part-0004.bin",
+      "sha256": "ea6b56659c25a583039a86c14ae242c887ffdb1f2b82d0ebaac055df42eacf12",
+      "size": 33554432
+    },
+    {
+      "name": "part-0005.bin",
+      "sha256": "37b678c94cb1fcc14d13a0f53d64becda8f8ca08c76e1b7ac80477a7e6e87034",
+      "size": 23623895
+    }
+  ]
+}
