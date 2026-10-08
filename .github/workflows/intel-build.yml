@@ -1,0 +1,22 @@
+name: Build Intel macOS desktop runtime
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  intel-runtime:
+    runs-on: macos-15-intel
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Build pinned source and perform headless protocol checks
+        shell: bash
+        run: bash ci/build-intel-runtime.sh
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: baiyi-numa-darwin-x64-runtime
+          path: intel-runtime-output/
+          if-no-files-found: error
+          retention-days: 7
