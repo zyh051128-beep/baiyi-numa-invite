@@ -1,4 +1,40 @@
-# Windows invitation installer tests
+# Invitation installer tests
+
+## macOS validation added 2026-10-08
+
+`install.sh` selects an existing CPython 3.9+; `install.py` authenticates the same
+complete encrypted release as the Windows installer. On macOS, system OpenSSL
+decrypts with the invitation supplied over stdin, not a command-line key. The
+independent fixture vector checks compatibility with the original AES format.
+
+The authenticated manifest now also contains `executables` and
+`platform_overlays.darwin`. Only the authenticated Mac `.mcp.json` source may replace
+the corresponding recipient configuration. Only authenticated shebang files and
+the explicitly allowed Darwin MCP binaries receive executable permissions. Both the
+extracted source and Codex's actual installed cache are checked against the derived
+recipient manifest. Windows continues to use the original configuration.
+
+`ci/test_macos_installer.py --require-openssl` covers the encryption backend, unsafe
+archives, overlays, permissions, cache omission/change/addition, disabled installs,
+preflight rollback viability, and commands that mutate state before failing.
+`ci/test_macos_verifier.py --scripts <cache>/scripts` checks the protocol, timeouts,
+owned process-group cleanup, architecture/Rosetta selection and synthetic OCR
+results. Tests use inert fixtures and a separate test invitation.
+
+The manually dispatched `macos-install.yml` tests Apple Silicon and Intel standard
+GitHub-hosted macOS runners with official Codex CLI 0.161.0. It installs and updates
+the complete production payload in isolated Chinese/space-containing paths, checks
+all final cache hashes and execution bits independently, verifies the normal Codex
+profile is untouched, and runs offline OCR on a synthetic image where the runtime
+is available. The invitation is an encrypted Actions secret, never committed or
+passed to Codex. Public artifacts contain only allowlisted counts/statuses/hashes;
+no decrypted plugin files or credentials are uploaded. Final results are recorded
+in VERIFICATION.md, not inferred from workflow presence.
+
+macOS exit 2 means all plugin files installed but the native desktop runtime cannot
+run on that system/architecture. It must not be reported as full runtime readiness.
+CI skips screen capture and does not grant TCC permissions or test GUI control,
+commercial solvers or paid cloud providers.
 
 This directory is a new distribution for `nuphus@baiyi-numa-invite`. Do not run the MAXx installer against this payload. No publication is performed by `install.ps1`.
 

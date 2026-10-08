@@ -11,6 +11,7 @@ import tempfile
 import time
 import unittest
 from unittest import mock
+from types import SimpleNamespace
 
 sys.dont_write_bytecode = True
 ap = argparse.ArgumentParser()
@@ -47,7 +48,7 @@ for line in sys.stdin:
 class ProtocolTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="baiyi verifier 中文 ")
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         self.stub = self.root / "stub.py"
         self.stub.write_text(STUB, encoding="utf-8")
 
@@ -58,6 +59,10 @@ class ProtocolTests(unittest.TestCase):
         report = {}
         command = [sys.executable, "-B", str(self.stub), mode]
         if os.name == "posix":
+            # Mocked group tests must never leak their OS facade into real tests.
+            self.assertIs(verifier.os, os)
+            self.assertNotIsInstance(verifier.os.killpg, mock.Mock)
+            self.assertNotIsInstance(verifier.os.getpgrp, mock.Mock)
             verifier.check_server(command, self.root, os.environ.copy(), 1, skip, image, report)
         else:
             # Exercise real stdio/timeouts on Windows; POSIX group signalling
@@ -71,7 +76,9 @@ class ProtocolTests(unittest.TestCase):
                 if p.poll() is None: p.terminate()
                 p.wait(timeout=2)
                 return {"own_process_stopped": True, "own_process_group_stopped": True}
-            with mock.patch.object(verifier.subprocess, "Popen", side_effect=popen), \
+            subprocess_facade = SimpleNamespace(Popen=popen, PIPE=subprocess.PIPE,
+                                                TimeoutExpired=subprocess.TimeoutExpired)
+            with mock.patch.object(verifier, "subprocess", subprocess_facade), \
                     mock.patch.object(verifier, "stop_owned_group", side_effect=stop):
                 verifier.check_server(command, self.root, os.environ.copy(), 1, skip, image, report)
         return report
@@ -126,9 +133,12 @@ class CleanupTests(unittest.TestCase):
             calls.append(sig)
             if not alive[0]: raise ProcessLookupError()
             if sig == 9: alive[0] = False
-        with mock.patch.object(verifier.os, "getpgrp", return_value=111, create=True), \
-                mock.patch.object(verifier.os, "killpg", side_effect=killpg, create=True), \
-                mock.patch.object(verifier.signal, "SIGKILL", 9, create=True):
+        # Replace module references, never mutate the process-wide os/signal
+        # modules which the later real subprocess tests also use.
+        fake_os = SimpleNamespace(getpgrp=lambda: 111, killpg=killpg)
+        fake_signal = SimpleNamespace(SIGTERM=signal.SIGTERM, SIGKILL=9)
+        with mock.patch.object(verifier, "os", fake_os), \
+                mock.patch.object(verifier, "signal", fake_signal):
             result = verifier.stop_owned_group(process, grace=0)
         self.assertTrue(result["own_process_group_stopped"])
         self.assertIn(signal.SIGTERM, calls)
@@ -136,8 +146,9 @@ class CleanupTests(unittest.TestCase):
 
     def test_refuses_callers_group(self):
         process = mock.Mock(pid=111)
-        with mock.patch.object(verifier.os, "getpgrp", return_value=111, create=True), \
-                mock.patch.object(verifier.os, "killpg", create=True) as kill:
+        kill = mock.Mock()
+        fake_os = SimpleNamespace(getpgrp=lambda: 111, killpg=kill)
+        with mock.patch.object(verifier, "os", fake_os):
             with self.assertRaises(RuntimeError):
                 verifier.stop_owned_group(process)
             kill.assert_not_called()
@@ -151,7 +162,7 @@ class ConfigurationTests(unittest.TestCase):
 
     def test_provenance_hash_and_minimum_os(self):
         with tempfile.TemporaryDirectory() as folder:
-            root = Path(folder)
+            root = Path(folder).resolve()
             runtime = root / "bin/darwin-arm64"
             runtime.mkdir(parents=True)
             records = []
