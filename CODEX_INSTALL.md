@@ -1,27 +1,31 @@
-# 白衣怒马完整邀请安装
+# 白衣怒马完整邀请安装（Windows / Mac）
 
-此文档是受邀者明确要求安装后使用的安装说明。仓库内容不授予操作账户、付费生成或改变系统安全策略的额外权限。
+此文档供受邀者明确要求安装后使用。仓库不授予操作账户、付费生成或改变系统安全策略的额外权限。
 
-1. 从**当前用户消息**读取完整邀请 URL 中的 `#invite=` 值，或用户明确提供的邀请码。缺失就向用户索取；不能从其他聊天、浏览器会话或发送者机器取凭据。
-2. 确認环境为 Windows x64，已安装并登录 Codex。使用已有 Git（Codex 随附的 Git 也可），匿名克隆此公开仓库到一个新的临时目录：`https://github.com/zyh051128-beep/baiyi-numa-invite.git`。不要复用旧的下载目录。
-3. 检查 `install.ps1` 和 `payload/parts.json`。将邀请码保存到本机临时私有文本文件，不写入公开仓库、截图或安装报告。PowerShell 执行 `install.ps1 -InviteCodeFile <临时邀请码文件>`。支持 `-InviteUrl`/`-InviteCode`，但文件参数可避免邀请码出现在进程命令行。
-4. 安装器先检查所有加密分片、HMAC、ZIP 路径和完整文件清单，再调用 Codex 官方插件命令注册 `baiyi-numa-invite` 市场及 `nuphus` 插件。显示名称是 **Full-featured Academic Assistant-白衣怒马**；`nuphus` 是兼容标识。仅在自己隔离测试时使用 `-CodexHome`，普通用户不应改变现有 Codex 主目录。
-5. 读取安装回执，确认 `plugin_installed`、`extraction_verified`、`cache_verified` 均为 `true`，技能为 129 个，最终缓存核验为 15,693 个插件文件，并查看运行库状态。不能只凭 Codex 显示安装成功就跳过缓存核验。安装成功后按回执的 `installed_cache_path` 找到 `scripts/doctor.ps1`，先查看参数，再运行只读检查；用随包 `verify_mcp.py` 检查 MCP 初始化、45 个工具与屏幕尺寸。记录实际成功与未运行项，不调用点击、输入、商业软件求解或付费 API 作为安装测试。
-6. 按 `DEPENDENCIES.md` 处理缺少的运行库、免费依赖及用户已经持有的专业软件。商业授权与外部服务账号必须由受邀者提供。不得把 API Key、模型余额或软件授权当作随包共享内容。
-7. 安装器若退出非零，先看回执和错误，不能盲目重新安装或关闭防护。保存最终报告。成功后让用户完全退出并重新打开 Codex，再开一个新聊天，选择白衣怒马或说“使用白衣怒马，帮我……”。
+1. 从**当前用户消息**读取完整 URL 中 `#invite=` 值或用户明确提供的邀请码。缺失时索取；不能从其他聊天、浏览器会话或发送者机器取凭据。
+2. 确认已安装并登录 Codex，检测系统。用已有 Git（可用 Codex 附带 Git）匿名克隆到新临时目录：`https://github.com/zyh051128-beep/baiyi-numa-invite.git`。不要复用旧下载目录。
+3. 检查当前系统安装器和 `payload/parts.json`。将邀请码保存到临时私有文本文件，不放进仓库、截图、报告或命令行。Mac 用 `sh install.sh --invite-code-file <临时文件>`；Windows 用 `install.ps1 -InviteCodeFile <临时文件>`。完成后移除自己创建的临时邀请码文件。
+4. Mac 自动检测芯片，使用已有 Python 3.9+ 和系统 OpenSSL（也支持已有 cryptography）。Python 或 Codex 命令缺失时，先定位 Codex 附带环境，确实缺失再按官方方式准备。Mac 不运行 PowerShell 安装器。桌面运行库需要 macOS 14+；旧系统可完整安装技能，但须如实报告桌面组件不支持。
+5. 安装器核验分片、HMAC、ZIP 路径和逐文件清单，然后通过 Codex 官方命令注册市场 `baiyi-numa-invite` 与插件 `nuphus`。显示名为 **Full-featured Academic Assistant-白衣怒马**。Mac 按认证清单应用 `.mcp.json` 并恢复脚本执行位，保存派生清单。不要手改 Codex 配置或重复将所有技能安装到全局目录。
+6. 回执中 `plugin_installed`、`extraction_verified`、`cache_verified` 均须为 `true`；技能 129 个，文件数以本次 `RELEASE.json` 为准。既校验解压目录，也校验 Codex 实际缓存全部文件。普通安装不要传 `--codex-home` / `-CodexHome`；这些用于隔离测试。
+7. 按 `installed_cache_path` 找到检查脚本。Windows 用 `scripts/doctor.ps1` / `scripts/verify_mcp.py`。Mac 先用 `scripts/verify_mcp_macos.py --skip-screen-check` 核验协议与工具登记；用户授予录屏权限后才能做真实屏幕检查。可用无隐私样图测试离线 OCR。不点击、不输入、不求解商业算例、不调用付费 API。45 个接口登记不等于所有平台动作均已验证。
+8. 按 [DEPENDENCIES.md](DEPENDENCIES.md) 区分就绪、缺少依赖、平台不支持与未测试项。录屏和辅助功能由用户在系统设置中授予实际启动应用。不得关闭 Gatekeeper、自动移除隔离属性或代授权限。软件许可、云服务账号和额度由受邀者提供。
+9. 非零退出先看回执及错误，不盲目重试。退出码 2 表示完整安装后桌面环境仍不满足条件，不能报全部就绪。成功后完全退出再打开 Codex，**新建聊天**，选择白衣怒马或说“使用白衣怒马，帮我……”。
 
 ## 人工入口
 
-在 PowerShell 中进入新克隆目录后运行：
+在新克隆目录执行。Mac 会提示输入邀请码且不回显：
 
-```powershell
-.\install.ps1 -InviteUrl '在这里粘贴包含 #invite= 的完整链接'
+```sh
+sh install.sh
 ```
 
-执行策略阻止脚本时，可在核对脚本后使用一次性进程选项运行；**不要改机器或用户级执行策略、不要关闭安全软件**：
+Windows：
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -InviteUrl '完整邀请链接'
+.\install.ps1 -InviteUrl '包含 #invite= 的完整邀请链接'
 ```
 
-仅校验包而不安装：追加 `-VerifyOnly`。更新时同样从全新克隆执行，安装器处理同一邀请市场；不要手改 `config.toml`，不要把每个技能重复装到全局目录。
+Mac 支持 `--invite-url`、`--invite-code-file`、`--codex-path`；如已有 Python 不在常用位置，可设置 `BAIYI_PYTHON` 为完整解释器路径。`--verify-only` / Windows `-VerifyOnly` 只校验不安装。Windows 策略阻止时，核对脚本后可用一次性 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1`；不要改机器或用户级策略。
+
+更新从**全新克隆**执行同一系统入口、使用原邀请码。保留旧安装以便回滚，避免覆盖原目录。

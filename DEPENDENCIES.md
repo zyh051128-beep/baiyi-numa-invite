@@ -4,8 +4,8 @@
 
 | 功能 | 需要的环境 | 如何判断可用 |
 |---|---|---|
-| Codex 技能读取与任务组织 | Windows x64 Codex 桌面版、自己的登录账号 | 插件列表已安装且启用，新聊天可选白衣怒马 |
-| 45 个本地桌面/浏览器工具、本地 OCR/图标识别 | 随包 exe/DLL/模型；Microsoft Visual C++ 2015–2022 x64 运行库；交互式桌面；浏览器任务需要 Chrome/Edge | `verify_mcp.py` 实际完成 initialize、tools/list、screen_size；OCR 可再用无隐私样图单测 |
+| Codex 技能读取与任务组织 | Windows 或 Mac Codex 桌面版、自己的登录账号；Mac 安装需要 Python 3.9+ 及系统 OpenSSL 或已有 cryptography | 插件列表已安装且启用，新聊天可选白衣怒马 |
+| 45 个本地桌面/浏览器工具、本地 OCR/图标识别 | Windows：随包 exe/DLL 及 VC++ x64；Mac：对应芯片的 Mach-O/dylib、macOS 14+；随包模型、交互式桌面、Chrome/Edge | Windows `verify_mcp.py`；Mac `verify_mcp_macos.py`。先检查协议与工具清单，再按权限检查屏幕；OCR 用无隐私样图。接口登记不保证所有动作支持 Mac |
 | SolidWorks、AutoCAD、Ansys/Fluent、COMSOL、MATLAB/Simulink | 本机对应软件、版本支持的接口、所需模块/许可证 | 检测安装路径之后，按用户任务另作实际启动/小算例验证；仅发现文件不算求解成功 |
 | COMSOL–MATLAB LiveLink | COMSOL LiveLink for MATLAB 授权、匹配 MATLAB；按实际位置设置 `COMSOL_MLI_PATH` 或 `COMSOL_HOME` | 使用随包连接脚本解析路径，需进一步连接验证 |
 | FreeCAD、CadQuery、OpenFOAM、Gmsh、ParaView | 各工具官方发行版；OpenFOAM 在 Windows 通常需要适当 Linux/WSL 环境 | 各工具自己的版本命令/最小样例；不替用户开启系统虚拟化或安装大型软件 |
@@ -19,3 +19,12 @@
 Microsoft 运行库官方入口：[最新受支持的 Visual C++ Redistributable](https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist)。使用微软签名的 x64 安装程序；已有运行库满足要求时不重复安装。
 
 已安装、已检测、已实际运行和未运行要分别记录。安装成功保证插件文件完整，不等于全部专业软件、云服务或每一种联合仿真都已实测通过。
+
+## Mac 平台说明
+
+- **系统权限**：屏幕截图/尺寸需要录屏，键鼠控制需要辅助功能。用户在系统设置中授权实际启动程序后重启 Codex。安装器不改变 Gatekeeper、不自动移除隔离属性或代授权限。
+- **SolidWorks / COM**：仍需 Windows。AutoCAD for Mac 接口不同，不能使用 Windows COM/ActiveX 路线。[SolidWorks 官方要求](https://www.solidworks.com/support/system-requirements)、[AutoCAD Mac 接口](https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-MAC-Customization/files/GUID-E6429154-36DF-4D84-8ABC-9FCA15B66158.htm)。
+- **Ansys / Fluent**：求解使用受支持 Windows/Linux，可由 Mac 准备输入或连接用户已有远程求解环境。[官方平台表](https://ansys.synopsys.com/content/dam/it-solutions/platform-support/2026-r1/ansys-2026-r1-platform-support-by-application.pdf)。
+- **OpenFOAM**：按发行版配置 Linux 虚拟机/容器，Mac 不用 WSL 指令。[Foundation Mac 指南](https://openfoam.org/version/macos/)。
+- **COMSOL / MATLAB / LiveLink**：检查版本、芯片、模块和许可证，安装技能不代表联调已就绪。
+- **GPU**：依赖 CUDA 的任务仍需 NVIDIA；Apple GPU 不等同 CUDA。

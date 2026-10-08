@@ -7,3 +7,7 @@ invitation.txt
 *.zip
 .env
 *-receipt.json
+
+ci-reports/
+intel-runtime-build/
+intel-runtime-output/
