@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import selectors
 import subprocess
 import sys
 import tempfile
@@ -117,6 +118,43 @@ class ProtocolTests(unittest.TestCase):
         with self.assertRaises(TimeoutError):
             self.check(mode="descendant")
 
+    @unittest.skipUnless(sys.platform == "darwin", "Real unreaped-zombie regression needs macOS")
+    def test_real_unreaped_zombie_group(self):
+        process = subprocess.Popen([sys.executable, "-B", "-c", "print('READY',flush=True)"],
+            stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+            start_new_session=True)
+        try:
+            with selectors.DefaultSelector() as ready:
+                ready.register(process.stdout, selectors.EVENT_READ)
+                self.assertTrue(ready.select(3), "Synthetic child did not become ready")
+                self.assertEqual(process.stdout.readline().strip(), b"READY")
+            # Deliberately do not poll()/wait(): leave our exited child unreaped.
+            deadline = time.monotonic() + 3
+            zombie = False
+            while time.monotonic() < deadline:
+                result = subprocess.run(["/bin/ps", "-p", str(process.pid), "-o", "stat="],
+                    capture_output=True, text=True, timeout=1, check=False)
+                if result.returncode == 0 and result.stdout.strip().startswith("Z"):
+                    zombie = True
+                    break
+                time.sleep(0.02)
+            self.assertTrue(zombie, "Expected the owned child to be an unreaped zombie")
+            self.assertIsNone(process.returncode)
+            try:
+                os.killpg(process.pid, 0)
+                expected_exists = True
+            except (PermissionError, ProcessLookupError):
+                expected_exists = False
+            # EPERM must be resolved against actual ps evidence, never ignored.
+            self.assertEqual(verifier.group_exists(process.pid), expected_exists)
+            stopped = verifier.stop_owned_group(process)
+            self.assertTrue(stopped["own_process_stopped"])
+            self.assertTrue(stopped["own_process_group_stopped"])
+        finally:
+            if process.returncode is None:
+                process.wait(timeout=3)
+            process.stdout.close()
+
     def test_ocr_cannot_pass_on_echoed_path(self):
         with self.assertRaises(RuntimeError):
             verifier.ocr_summary({"content": [{"type": "text", "text":
@@ -124,6 +162,46 @@ class ProtocolTests(unittest.TestCase):
 
 
 class CleanupTests(unittest.TestCase):
+    def inspect_denied_group(self, output, returncode=0):
+        def denied(*_):
+            raise PermissionError("synthetic permission failure")
+        fake_os = SimpleNamespace(killpg=denied)
+        run = mock.Mock(return_value=SimpleNamespace(returncode=returncode, stdout=output))
+        fake_subprocess = SimpleNamespace(run=run, PIPE=subprocess.PIPE,
+            DEVNULL=subprocess.DEVNULL, TimeoutExpired=subprocess.TimeoutExpired)
+        with mock.patch.object(verifier, "os", fake_os), \
+                mock.patch.object(verifier, "subprocess", fake_subprocess):
+            result = verifier.group_exists(23456)
+        run.assert_called_once_with(["/bin/ps", "-axo", "pid=,pgid=,stat="],
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, timeout=1, check=False)
+        return result
+
+    def test_eperm_empty_owned_group_requires_ps_evidence(self):
+        self.assertFalse(self.inspect_denied_group("100 999 S\n"))
+
+    def test_eperm_zombie_only_group_is_stopped(self):
+        self.assertFalse(self.inspect_denied_group("100 999 R\n23457 23456 Z+\n"))
+
+    def test_eperm_live_owned_member_remains_an_error(self):
+        with self.assertRaises(PermissionError):
+            self.inspect_denied_group("23457 23456 S\n23458 23456 Z\n")
+
+    def test_eperm_unverifiable_group_never_passes(self):
+        for output, code in (("", 0), ("malformed row", 0), ("100 999 R\n", 1)):
+            with self.subTest(output=output, code=code), self.assertRaises(RuntimeError):
+                self.inspect_denied_group(output, code)
+
+    def test_eperm_inspection_timeout_never_passes(self):
+        fake_os = SimpleNamespace(killpg=mock.Mock(side_effect=PermissionError()))
+        fake_subprocess = SimpleNamespace(
+            run=mock.Mock(side_effect=subprocess.TimeoutExpired("ps", 1)),
+            PIPE=subprocess.PIPE, DEVNULL=subprocess.DEVNULL,
+            TimeoutExpired=subprocess.TimeoutExpired)
+        with mock.patch.object(verifier, "os", fake_os), \
+                mock.patch.object(verifier, "subprocess", fake_subprocess), \
+                self.assertRaises(RuntimeError):
+            verifier.group_exists(23456)
+
     def test_kills_only_owned_group_even_when_parent_exited(self):
         process = mock.Mock(pid=23456, returncode=0, stdin=None)
         alive = [True]

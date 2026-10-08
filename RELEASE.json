@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "display_name": "Full-featured Academic Assistant-白衣怒马",
-  "version": "1.0.0+codex.20261008154501",
+  "version": "1.0.0+codex.20261008160320",
   "supported_os": [
     "Windows x64",
     "macOS (Apple Silicon and Intel): complete skill installation"
@@ -14,9 +14,9 @@
   "skill_count": 129,
   "mcp_tool_count": 45,
   "plugin_file_count": 15700,
-  "expanded_plugin_bytes": 289518247,
-  "encrypted_bytes": 174710743,
-  "encrypted_sha256": "ca56c8cdd338bf2b0790c1d0c15103d4d852adda8a86ec6a0b47aec5e16356c4",
+  "expanded_plugin_bytes": 289519756,
+  "encrypted_bytes": 174711159,
+  "encrypted_sha256": "dd30eba097adc669062f8789d2fc7ca5544c0950665079ab58960fa6bcfb169f",
   "skills": [
     "algorithmic-art",
     "ansys-automatic-wwj",
