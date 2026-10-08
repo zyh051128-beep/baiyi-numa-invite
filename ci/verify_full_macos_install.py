@@ -40,7 +40,7 @@ try:
             install_root=base/label
             result=run(['/bin/sh',str(ROOT/'install.sh'),'--invite-code-file',str(secret),
                         '--crypto-backend','openssl','--install-root',str(install_root),
-                        '--codex-home',str(home),'--codex-path',codex],env,accepted=(0,2))
+                        '--codex-home',str(home),'--codex-path',codex],env)
             receipt=json.loads((install_root/'installation-state.json').read_text())
             assert all(receipt.get(x) is True for x in ('plugin_installed','extraction_verified','cache_verified'))
             cache=pathlib.Path(receipt['installed_cache_path'])
@@ -65,7 +65,7 @@ try:
             # Never publish private file paths or raw image contents as CI artifacts.
             report['mcp']={k:v for k,v in mcp.items() if k not in ('plugin_root','launch_command')}
         else:
-            report['mcp']={'ok':False,'not_run':'matching runtime unavailable'}
+            raise RuntimeError('The final macOS release must include a working runtime for both architectures')
         fixture=ROOT/'ci/test_macos_installer.py'
         if fixture.exists(): run([sys.executable,'-B',str(fixture),'--require-openssl','-v'],env)
         run([sys.executable,'-B','ci/test_macos_verifier.py','--scripts',str(cache/'scripts'),'-v'],env)

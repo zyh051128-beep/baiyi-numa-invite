@@ -29,6 +29,7 @@
 ## 安装与使用边界
 
 - Windows x64 和 Mac 都安装**全部 129 项技能及资源**。Mac 自动配置启动器、逐文件核验实际缓存并恢复执行权限；桌面运行组件需要 **macOS 14 或更新**，回执明确显示运行组件和权限状态。
+- 包内提供 Apple 芯片和 Intel 两种 Mac 运行组件，安装器自动选择。两种芯片使用各自兼容的本地识别运行库，来源、补丁和许可证均随包保存。
 - Mac 的录屏与辅助功能权限由用户授予；部分上游桌面动作只支持 Windows。SolidWorks、Windows COM 及 Ansys/Fluent 求解另有平台要求，见 [DEPENDENCIES.md](DEPENDENCIES.md)。保留完整技能不等于这些软件都能在 Mac 原生执行。
 - 插件包含全部技能与资源，**不包含 SolidWorks、MATLAB、COMSOL、Ansys 等商业软件的安装许可**。免费软件和 Python/Node 依赖按任务准备；详见 [DEPENDENCIES.md](DEPENDENCIES.md)。
 - 推理使用受邀者自己的 Codex/ChatGPT 账号；World Labs、FAL、云视觉等可选服务使用受邀者自己的账号与额度。不会共享邀请人的任何账号或密钥。
