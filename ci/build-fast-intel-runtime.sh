@@ -19,6 +19,7 @@ git -C "$BUILD_ROOT/nuphus-mcp" remote add origin https://github.com/mrpulor-gh/
 git -C "$BUILD_ROOT/nuphus-mcp" fetch --depth 1 origin "$NUPHUS_COMMIT"
 git -C "$BUILD_ROOT/nuphus-mcp" checkout --detach FETCH_HEAD
 [ "$(git -C "$BUILD_ROOT/nuphus-mcp" rev-parse HEAD)" = "$NUPHUS_COMMIT" ]
+cp "$BUILD_ROOT/nuphus-mcp/LICENSE" "$OUT/licenses/nuphus-mcp-LICENSE"
 curl --fail --location --proto '=https' --proto-redir '=https' --retry 2 \
   'https://github.com/microsoft/onnxruntime/releases/download/v1.23.2/onnxruntime-osx-x86_64-1.23.2.tgz' \
   --output "$BUILD_ROOT/onnxruntime-osx-x86_64-1.23.2.tgz"
