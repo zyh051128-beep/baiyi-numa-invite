@@ -1,1 +1,138 @@
-{"status":"macos_validation_in_progress","skill_count":129,"previous_windows_release_verified":"1.0.0+codex.20261007150216"}
+{
+  "status": "VERIFIED",
+  "version": "1.0.0+codex.20261008165120",
+  "skill_count": 129,
+  "plugin_files": 15708,
+  "encrypted_sha256": "c1f872ed65dd9cc5cb95cfd3ec4fc84791a842aefcc1eaef406cbaccea8de445",
+  "payload_commit": "35a5c63cf8eaab65df5f176d376e30b22a995e2f",
+  "macos_validation_run": "https://github.com/zyh051128-beep/baiyi-numa-invite/actions/runs/37812577154",
+  "intel_runtime_build_run": "https://github.com/zyh051128-beep/baiyi-numa-invite/actions/runs/37808116787",
+  "macos": [
+    {
+      "machine": "arm64",
+      "macos": "15.7.9",
+      "codex_version": "codex-cli 0.161.0",
+      "fixture_tests_passed": true,
+      "default_profile_unchanged": true,
+      "gui_permissions_tested": false,
+      "mcp": {
+        "ok": true,
+        "read_only": true,
+        "platform": "darwin",
+        "architecture": "arm64",
+        "runtime_architecture": "arm64",
+        "runtime_sha256_verified": 2,
+        "models_present": 4,
+        "launch_source": ".mcp.json:mcpServers.白衣怒马",
+        "server": {
+          "name": "nuphus-mcp",
+          "version": "0.3.1"
+        },
+        "protocol_version": "2024-11-05",
+        "tool_count": 45,
+        "screen_check": "skipped_explicitly",
+        "offline_ocr": {
+          "expected_text_matches": 1,
+          "element_count": 1
+        },
+        "own_process_stopped": true,
+        "own_process_group_stopped": true,
+        "elapsed_seconds": 0.417
+      },
+      "full_install_and_update": true,
+      "plugin_files": 15708,
+      "executables_checked": 427
+    },
+    {
+      "machine": "x86_64",
+      "macos": "15.7.9",
+      "codex_version": "codex-cli 0.161.0",
+      "fixture_tests_passed": true,
+      "default_profile_unchanged": true,
+      "gui_permissions_tested": false,
+      "mcp": {
+        "ok": true,
+        "read_only": true,
+        "platform": "darwin",
+        "architecture": "x86_64",
+        "runtime_architecture": "x86_64",
+        "runtime_sha256_verified": 2,
+        "models_present": 4,
+        "launch_source": ".mcp.json:mcpServers.白衣怒马",
+        "server": {
+          "name": "nuphus-mcp",
+          "version": "0.3.1"
+        },
+        "protocol_version": "2024-11-05",
+        "tool_count": 45,
+        "screen_check": "skipped_explicitly",
+        "offline_ocr": {
+          "expected_text_matches": 1,
+          "element_count": 1
+        },
+        "own_process_stopped": true,
+        "own_process_group_stopped": true,
+        "elapsed_seconds": 1.324
+      },
+      "full_install_and_update": true,
+      "plugin_files": 15708,
+      "executables_checked": 427
+    }
+  ],
+  "windows": {
+    "version": "1.0.0+codex.20261008165120",
+    "isolated_cli_install": true,
+    "installed_enabled": true,
+    "plugin_files": 15708,
+    "skills": 129,
+    "all_cache_files_equal_canonical": true,
+    "owner_configuration_unchanged": true,
+    "installer_sha256": "d60520de7aaa790be2faa99643c46e11cc0cf31f6b6f60064955497808936a0e",
+    "payload_sha256": "c1f872ed65dd9cc5cb95cfd3ec4fc84791a842aefcc1eaef406cbaccea8de445"
+  },
+  "windows_mcp": {
+    "ok": true,
+    "read_only": true,
+    "binary_sha256_verified": true,
+    "launch_source": ".mcp.json:mcpServers.白衣怒马",
+    "configured_server_name": "白衣怒马",
+    "assets_present": 6,
+    "server": {
+      "name": "nuphus-mcp",
+      "version": "0.3.1"
+    },
+    "protocol_version": "2024-11-05",
+    "tool_count": 45,
+    "screen_size": {
+      "width": 2560,
+      "height": 1440
+    },
+    "offline_ocr": {
+      "expected_text_matches": 2,
+      "element_count": 1
+    },
+    "own_process_stopped": true,
+    "elapsed_seconds": 0.844
+  },
+  "anonymous_download": {
+    "anonymous_clone": true,
+    "credential_helpers_disabled": true,
+    "public_url": "https://github.com/zyh051128-beep/baiyi-numa-invite.git",
+    "commit": "35a5c63cf8eaab65df5f176d376e30b22a995e2f",
+    "version": "1.0.0+codex.20261008165120",
+    "payload_sha256": "c1f872ed65dd9cc5cb95cfd3ec4fc84791a842aefcc1eaef406cbaccea8de445",
+    "payload_bytes": 192773191,
+    "parts": 6,
+    "plugin_files": 15708,
+    "skill_count": 129,
+    "installation": "PASSED"
+  },
+  "installer_sha256": {
+    "install.py": "94c169fd9350e86299d509eabfe0b04f7eb2305abf408c4eae23866daa12ba59",
+    "install.sh": "b547dd9911d22817d390a351d55c430698f8ec464acdc23eb3fe82da33b0a765",
+    "install.ps1": "d60520de7aaa790be2faa99643c46e11cc0cf31f6b6f60064955497808936a0e"
+  },
+  "commercial_solvers_tested": false,
+  "paid_services_called": false,
+  "macos_gui_permissions_tested": false
+}
